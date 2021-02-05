@@ -1,6 +1,9 @@
-const dotenv = require("dotenv");
-dotenv.config();
+const dotenv = require('dotenv');
+
+if (process.env.NODE_ENV === 'production') {
+  dotenv.config();
+}
 
 module.exports = {
-  secret: process.env.secret || "some(^^4&23encrtyped%#!@secret",
+  secret: process.env.SECRET || 'some(^^4&23encrtyped%#!@secret',
 };
