@@ -1,4 +1,6 @@
-const app = require("./app");
+require('@babel/register');
+
+const app = require('./app');
 
 const normalizePort = (val) => {
   const port = parseInt(val, 10);
@@ -8,22 +10,22 @@ const normalizePort = (val) => {
 };
 
 const port = normalizePort(process.env.PORT || 4000);
-app.set("port", port);
+app.set('port', port);
 
 // const server = http.createServer(app);
 
 const onError = (error) => {
-  if (error.syscall !== "listen") throw error;
+  if (error.syscall !== 'listen') throw error;
 
-  const bind = typeof port === "string" ? `Pipe  ${port}` : `Port ${port}`;
+  const bind = typeof port === 'string' ? `Pipe  ${port}` : `Port ${port}`;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
-    case "EACCES":
+    case 'EACCES':
       console.error(`${bind} requires elevated privileges`);
       process.exit(1);
       break;
-    case "EADDRINUSE":
+    case 'EADDRINUSE':
       console.error(`${bind} is already in use`);
       process.exit(1);
       break;
@@ -36,4 +38,4 @@ app.listen(port, (req, res) => {
   console.log(`App is running on http://localhost:${port}`);
 });
 
-app.on("error", onError);
+app.on('error', onError);
