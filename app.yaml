@@ -2,7 +2,6 @@ runtime: nodejs14
 
 env_variables:
   SECRET: 'hyper@loop(^^4&23encrtyped%#!@secret'
-  DB_CONNECTION_STRING: 'MongoDBConnectionString'
 
 handlers:
   - url: /.*
