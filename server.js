@@ -35,7 +35,7 @@ const onError = (error) => {
 };
 
 app.listen(port, (req, res) => {
-  console.log(`App is running on http://localhost:${port}`);
+  console.log(`Server app is running on port: ${port}...`);
 });
 
 app.on('error', onError);
