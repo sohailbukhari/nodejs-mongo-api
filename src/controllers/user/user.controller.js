@@ -13,6 +13,11 @@ export const create = async (args, isAdmin = false) => {
   return User.create(args);
 };
 
+export const update = async ({ id, args, isAdmin }) => {
+  if (!isAdmin) delete args['scope'];
+  return User.findOneAndUpdate({ _id: id }, args, { new: true });
+};
+
 export const signin = async (args) => {
   const user = await User.findOne(args);
   if (!user) throw { status: 401 };

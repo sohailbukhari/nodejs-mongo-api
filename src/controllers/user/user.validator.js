@@ -44,6 +44,16 @@ export const single = {
 };
 
 export const update = {
-  ...create,
+  body: Joi.object({
+    name: Joi.string().required(),
+    password: Joi.string(),
+    scope: Joi.string().valid(...ENUMS.SCOPES),
+    attributes: Joi.array().items(
+      Joi.object({
+        key: Joi.string().default(''),
+        value: Joi.string().default(''),
+      }).options({ stripUnknown: true })
+    ),
+  }).options({ stripUnknown: true }),
   ...single,
 };

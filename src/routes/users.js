@@ -6,7 +6,7 @@ import * as userValidator from '../controllers/user/user.validator';
 import * as crudHelper from '../utils/crud.helper';
 import { User } from '../models';
 import { trim } from '../middlewares/trimmer';
-import { isAdmin } from '../middlewares/auth';
+import { isAdmin, isAdminOrSelf } from '../middlewares/auth';
 
 const router = express.Router();
 
@@ -64,17 +64,13 @@ router.post('/', unlock, isAdmin, validate(userValidator.create), trim(userValid
   }
 });
 
-router.put('/:id', unlock, validate(userValidator.update), trim(userValidator.update), async function (req, res, next) {
+router.put('/:id', unlock, isAdminOrSelf, validate(userValidator.update), trim(userValidator.update), async function (req, res, next) {
   try {
-    res.reply({
-      data: await crudHelper.update({
-        Model: User,
-        id: req.params.id,
-        args: req.body,
-      }),
+    return res.reply({
+      data: await userController.update({ id: req.params.id, args: req.body, isAdmin: req.isAdmin }),
     });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 });
 
