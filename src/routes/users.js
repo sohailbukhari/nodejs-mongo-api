@@ -5,6 +5,7 @@ import * as userController from '../controllers/user/user.controller';
 import * as userValidator from '../controllers/user/user.validator';
 import * as crudHelper from '../utils/crud.helper';
 import { User } from '../models';
+import { trim } from '../middlewares/trimmer';
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.get('/me', unlock, async function (req, res, next) {
   }
 });
 
-router.post('/signup', validate(userValidator.create), async function (req, res, next) {
+router.post('/signup', validate(userValidator.create), trim(userValidator.create), async function (req, res, next) {
   try {
     return res.reply({ data: await userController.create(req.body) });
   } catch (err) {
@@ -24,7 +25,7 @@ router.post('/signup', validate(userValidator.create), async function (req, res,
   }
 });
 
-router.post('/signin', validate(userValidator.signin), async function (req, res, next) {
+router.post('/signin', validate(userValidator.signin), trim(userValidator.signin), async function (req, res, next) {
   try {
     return res.reply({ data: await userController.signin(req.body) });
   } catch (err) {
@@ -32,7 +33,7 @@ router.post('/signin', validate(userValidator.signin), async function (req, res,
   }
 });
 
-router.get('/', unlock, validate(userValidator.list), async function (req, res, next) {
+router.get('/', unlock, validate(userValidator.list), trim(userValidator.list), async function (req, res, next) {
   try {
     res.reply({
       data: await crudHelper.list({ Model: User, args: req.query }),
@@ -42,7 +43,7 @@ router.get('/', unlock, validate(userValidator.list), async function (req, res, 
   }
 });
 
-router.get('/:id', unlock, validate(userValidator.single), async function (req, res, next) {
+router.get('/:id', unlock, validate(userValidator.single), trim(userValidator.single), async function (req, res, next) {
   try {
     res.reply({
       data: await crudHelper.single({ Model: User, id: req.params.id }),
@@ -52,7 +53,7 @@ router.get('/:id', unlock, validate(userValidator.single), async function (req, 
   }
 });
 
-router.post('/', unlock, validate(userValidator.create), async function (req, res, next) {
+router.post('/', unlock, validate(userValidator.create), trim(userValidator.create), async function (req, res, next) {
   try {
     res.reply({
       data: await crudHelper.create({ Model: User, args: req.body }),
@@ -62,7 +63,7 @@ router.post('/', unlock, validate(userValidator.create), async function (req, re
   }
 });
 
-router.put('/:id', unlock, validate(userValidator.update), async function (req, res, next) {
+router.put('/:id', unlock, validate(userValidator.update), trim(userValidator.update), async function (req, res, next) {
   try {
     res.reply({
       data: await crudHelper.update({
@@ -76,8 +77,9 @@ router.put('/:id', unlock, validate(userValidator.update), async function (req, 
   }
 });
 
-router.delete('/:id', unlock, validate(userValidator.single), async function (req, res, next) {
+router.delete('/:id', unlock, validate(userValidator.single), trim(userValidator.single), async function (req, res, next) {
   try {
+    if (req.user._id === req.params.id) throw { status: 403 }; // self cleanup
     res.reply({
       data: await crudHelper.remove({ Model: User, id: req.params.id }),
     });
