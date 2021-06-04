@@ -20,27 +20,27 @@ export const create = {
         .default([])
         .options({ stripUnknown: true })
     ),
-  }),
+  }).options({ stripUnknown: true }),
 };
 
 export const signin = {
   body: Joi.object({
     email: Joi.string().required(),
     password: Joi.string().required(),
-  }),
+  }).options({ stripUnknown: true }),
 };
 
 export const list = {
   query: Joi.object({
     page: Joi.number().default(1),
     limit: Joi.number().default(25),
-  }),
+  }).options({ stripUnknown: true }),
 };
 
 export const single = {
   params: Joi.object({
     id: Joi.objectId().required(),
-  }),
+  }).options({ stripUnknown: true }),
 };
 
 export const update = {
