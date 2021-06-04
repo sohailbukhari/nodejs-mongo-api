@@ -6,6 +6,7 @@ import * as userValidator from '../controllers/user/user.validator';
 import * as crudHelper from '../utils/crud.helper';
 import { User } from '../models';
 import { trim } from '../middlewares/trimmer';
+import { isAdmin } from '../middlewares/auth';
 
 const router = express.Router();
 
@@ -53,7 +54,7 @@ router.get('/:id', unlock, validate(userValidator.single), trim(userValidator.si
   }
 });
 
-router.post('/', unlock, validate(userValidator.create), trim(userValidator.create), async function (req, res, next) {
+router.post('/', unlock, isAdmin, validate(userValidator.create), trim(userValidator.create), async function (req, res, next) {
   try {
     res.reply({
       data: await crudHelper.create({ Model: User, args: req.body }),
@@ -77,7 +78,7 @@ router.put('/:id', unlock, validate(userValidator.update), trim(userValidator.up
   }
 });
 
-router.delete('/:id', unlock, validate(userValidator.single), trim(userValidator.single), async function (req, res, next) {
+router.delete('/:id', unlock, isAdmin, validate(userValidator.single), trim(userValidator.single), async function (req, res, next) {
   try {
     if (req.user._id === req.params.id) throw { status: 403 }; // self cleanup
     res.reply({
